@@ -1,0 +1,6 @@
+build/
+.venv/
+.cache/
+
+# macOS
+.DS_Store

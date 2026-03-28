@@ -1,0 +1,13 @@
+workload,threads,execution_ms,speedup,efficiency
+parallel_sum,1,13.4350,1.0000,1.0000
+parallel_sum,2,6.0663,2.2147,1.1074
+parallel_sum,4,3.0585,4.3926,1.0982
+parallel_sum,8,2.3401,5.7412,0.7176
+matrix_multiplication,1,39.9890,1.0000,1.0000
+matrix_multiplication,2,20.4895,1.9517,0.9758
+matrix_multiplication,4,11.0449,3.6206,0.9051
+matrix_multiplication,8,8.2698,4.8355,0.6044
+synthetic_dag,1,107.7250,1.0000,1.0000
+synthetic_dag,2,55.8647,1.9283,0.9642
+synthetic_dag,4,32.0682,3.3593,0.8398
+synthetic_dag,8,20.9418,5.1440,0.6430
