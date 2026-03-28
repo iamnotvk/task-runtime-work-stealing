@@ -9,52 +9,143 @@
 <body>
     <main class="page">
         <section class="hero">
-            <p class="eyebrow">HPC Research Project</p>
-            <h1>Task-Based Parallel Runtime with Work-Stealing Scheduler</h1>
-            <p class="lede">
-                A compact C++ runtime for DAG-based execution, dynamic load balancing, and benchmark-driven analysis.
-            </p>
-            <a class="button" href="https://github.com/iamnotvk/task-runtime-work-stealing">View Repository</a>
+            <div class="hero-copy">
+                <p class="eyebrow">HPC Research Project</p>
+                <h1>Task-Based Parallel Runtime with Work-Stealing Scheduler</h1>
+                <p class="lede">
+                    A compact C++17 shared-memory runtime for dependency-aware execution, decentralized load balancing, and reproducible benchmark analysis.
+                </p>
+                <div class="hero-actions">
+                    <a class="button" href="https://github.com/iamnotvk/task-runtime-work-stealing">View Repository</a>
+                    <a class="button button-secondary" href="#results">See Results</a>
+                </div>
+            </div>
+            <div class="hero-panel">
+                <p class="panel-label">Measured Highlights</p>
+                <div class="stats-grid">
+                    <article class="stat">
+                        <span class="stat-value">5.74x</span>
+                        <span class="stat-label">Best speedup</span>
+                    </article>
+                    <article class="stat">
+                        <span class="stat-value">3</span>
+                        <span class="stat-label">Benchmarked workloads</span>
+                    </article>
+                    <article class="stat">
+                        <span class="stat-value">1-8</span>
+                        <span class="stat-label">Thread range</span>
+                    </article>
+                    <article class="stat">
+                        <span class="stat-value">C++17</span>
+                        <span class="stat-label">Runtime language</span>
+                    </article>
+                </div>
+            </div>
         </section>
 
-        <section>
-            <h2>Project Overview</h2>
+        <section class="split-section">
+            <div>
+                <p class="section-tag">Overview</p>
+                <h2>What the project demonstrates</h2>
+            </div>
             <p>
-                The system executes tasks as a directed acyclic graph on a fixed-size thread pool. Each worker owns a local deque, and idle workers steal tasks to maintain utilization under irregular workloads.
+                The runtime executes tasks as a directed acyclic graph on a fixed-size thread pool. Tasks become runnable only when their predecessor dependencies complete, and idle workers dynamically steal work from busy workers to maintain utilization under irregular task availability.
             </p>
         </section>
 
         <section>
-            <h2>System Architecture</h2>
+            <p class="section-tag">Architecture</p>
+            <h2>System design at a glance</h2>
             <div class="card-grid">
                 <article class="card">
                     <h3>Task Graph</h3>
-                    <p>Tasks store a callable body, successor list, and remaining dependency counter.</p>
+                    <p>Each task stores a callable body, successor list, and atomic dependency counter so readiness can be resolved incrementally.</p>
                 </article>
                 <article class="card">
-                    <h3>Scheduler</h3>
-                    <p>Workers pop local work in LIFO order and steal remote work in FIFO order for balance.</p>
+                    <h3>Worker Queues</h3>
+                    <p>Each worker owns a deque and executes local work in LIFO order to preserve locality and reduce scheduling friction.</p>
                 </article>
                 <article class="card">
-                    <h3>Evaluation</h3>
-                    <p>Benchmarks report execution time, speedup, and efficiency for 1, 2, 4, and 8 threads.</p>
+                    <h3>Work Stealing</h3>
+                    <p>Idle workers steal from the front of peer queues, improving balance when the DAG exposes uneven parallelism.</p>
+                </article>
+                <article class="card">
+                    <h3>Evaluation Pipeline</h3>
+                    <p>Benchmark runs emit CSV data and plotting scripts generate figures reused by both the paper workflow and this site.</p>
                 </article>
             </div>
         </section>
 
         <section>
-            <h2>Benchmark Results</h2>
+            <p class="section-tag">Execution Flow</p>
+            <h2>How scheduling works</h2>
+            <div class="flow-grid">
+                <article class="flow-step">
+                    <span class="flow-index">01</span>
+                    <h3>Create Tasks</h3>
+                    <p>Applications register task bodies and dependency edges to form a DAG before execution begins.</p>
+                </article>
+                <article class="flow-step">
+                    <span class="flow-index">02</span>
+                    <h3>Enqueue Ready Work</h3>
+                    <p>Tasks with zero unresolved dependencies are pushed into worker-owned ready queues.</p>
+                </article>
+                <article class="flow-step">
+                    <span class="flow-index">03</span>
+                    <h3>Execute and Unlock</h3>
+                    <p>Completed tasks decrement successor counters, and any counter reaching zero releases a new runnable task.</p>
+                </article>
+                <article class="flow-step">
+                    <span class="flow-index">04</span>
+                    <h3>Steal When Idle</h3>
+                    <p>Workers with empty local queues probe peers and steal work to keep compute resources busy.</p>
+                </article>
+            </div>
+        </section>
+
+        <section id="results">
+            <p class="section-tag">Results</p>
+            <h2>Benchmark outcomes</h2>
+            <p class="section-copy">
+                The runtime was evaluated on parallel sum, blocked matrix multiplication, and a synthetic dependency-rich DAG across 1, 2, 4, and 8 worker threads.
+            </p>
+            <div class="results-notes">
+                <article class="note-card">
+                    <h3>Parallel Sum</h3>
+                    <p>Strongest observed scaling, reaching 5.74x speedup as the reduction tree exposes wide initial parallelism.</p>
+                </article>
+                <article class="note-card">
+                    <h3>Matrix Multiply</h3>
+                    <p>Compute-dense tasks amortize scheduler overhead well, though efficiency declines at higher thread counts.</p>
+                </article>
+                <article class="note-card">
+                    <h3>Synthetic DAG</h3>
+                    <p>Irregular dependency structure still scales meaningfully, reaching 5.14x speedup at 8 threads.</p>
+                </article>
+            </div>
             <div class="figure-grid">
-                <img src="assets/figures/execution_time.png" alt="Execution time graph">
-                <img src="assets/figures/speedup.png" alt="Speedup graph">
-                <img src="assets/figures/efficiency.png" alt="Efficiency graph">
+                <figure class="figure-card">
+                    <img src="assets/figures/execution_time.png" alt="Execution time graph">
+                    <figcaption>Execution time across workloads and thread counts.</figcaption>
+                </figure>
+                <figure class="figure-card">
+                    <img src="assets/figures/speedup.png" alt="Speedup graph">
+                    <figcaption>Speedup relative to the single-thread baseline.</figcaption>
+                </figure>
+                <figure class="figure-card">
+                    <img src="assets/figures/efficiency.png" alt="Efficiency graph">
+                    <figcaption>Efficiency trends as concurrency increases.</figcaption>
+                </figure>
             </div>
         </section>
 
-        <section>
-            <h2>Key Insights</h2>
+        <section class="insight-band">
+            <div>
+                <p class="section-tag">Key Insight</p>
+                <h2>Why the results matter</h2>
+            </div>
             <p>
-                Work stealing improves balance when the DAG exposes uneven ready work, but efficiency drops as synchronization and memory traffic become more visible at higher thread counts.
+                The project shows that a relatively small runtime can still capture the essential behavior of task-based shared-memory execution: tasks unlock incrementally through dependency resolution, work stealing smooths imbalance, and scalability depends on both the exposed parallelism of the DAG and the cost of synchronization as thread count rises.
             </p>
         </section>
     </main>
