@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task-Based Parallel Runtime</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <main class="page">
+        <section class="hero">
+            <p class="eyebrow">HPC Research Project</p>
+            <h1>Task-Based Parallel Runtime with Work-Stealing Scheduler</h1>
+            <p class="lede">
+                A compact C++ runtime for DAG-based execution, dynamic load balancing, and benchmark-driven analysis.
+            </p>
+            <a class="button" href="https://github.com/iamnotvk/task-runtime-work-stealing">View Repository</a>
+        </section>
+
+        <section>
+            <h2>Project Overview</h2>
+            <p>
+                The system executes tasks as a directed acyclic graph on a fixed-size thread pool. Each worker owns a local deque, and idle workers steal tasks to maintain utilization under irregular workloads.
+            </p>
+        </section>
+
+        <section>
+            <h2>System Architecture</h2>
+            <div class="card-grid">
+                <article class="card">
+                    <h3>Task Graph</h3>
+                    <p>Tasks store a callable body, successor list, and remaining dependency counter.</p>
+                </article>
+                <article class="card">
+                    <h3>Scheduler</h3>
+                    <p>Workers pop local work in LIFO order and steal remote work in FIFO order for balance.</p>
+                </article>
+                <article class="card">
+                    <h3>Evaluation</h3>
+                    <p>Benchmarks report execution time, speedup, and efficiency for 1, 2, 4, and 8 threads.</p>
+                </article>
+            </div>
+        </section>
+
+        <section>
+            <h2>Benchmark Results</h2>
+            <div class="figure-grid">
+                <img src="assets/figures/execution_time.png" alt="Execution time graph">
+                <img src="assets/figures/speedup.png" alt="Speedup graph">
+                <img src="assets/figures/efficiency.png" alt="Efficiency graph">
+            </div>
+        </section>
+
+        <section>
+            <h2>Key Insights</h2>
+            <p>
+                Work stealing improves balance when the DAG exposes uneven ready work, but efficiency drops as synchronization and memory traffic become more visible at higher thread counts.
+            </p>
+        </section>
+    </main>
+</body>
+</html>

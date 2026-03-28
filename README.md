@@ -10,6 +10,7 @@ The project includes:
 - `benchmarks/`: benchmark driver for parallel sum, matrix multiplication, and synthetic DAG workloads
 - `results/`: generated CSV files and figures
 - `scripts/`: plotting utilities
+- `docs/`: GitHub Pages publish target
 - `website/`: static site assets for GitHub Pages
 
 The runtime executes tasks represented as a directed acyclic graph, uses a fixed-size `std::thread` pool, balances load with per-worker queues plus work stealing, and reports execution time, speedup, and efficiency across multiple workloads.
@@ -40,6 +41,19 @@ This writes `results/benchmark_results.csv`.
 ```
 
 This writes PNG figures to `results/figures/` and copies website-ready versions to `website/assets/figures/`.
+
+It also syncs the GitHub Pages figures into `docs/assets/figures/`.
+
+## Website
+
+To publish the site with GitHub Pages:
+
+1. Open repository `Settings`
+2. Open `Pages`
+3. Set `Source` to `Deploy from a branch`
+4. Select branch `master`
+5. Select folder `/docs`
+6. Save
 
 ## Benchmarks
 

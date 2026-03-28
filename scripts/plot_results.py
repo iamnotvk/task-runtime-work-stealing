@@ -7,6 +7,7 @@ ROOT = Path(__file__).resolve().parents[1]
 RESULTS_CSV = ROOT / "results" / "benchmark_results.csv"
 FIGURES_DIR = ROOT / "results" / "figures"
 WEBSITE_FIGURES_DIR = ROOT / "website" / "assets" / "figures"
+DOCS_FIGURES_DIR = ROOT / "docs" / "assets" / "figures"
 MPL_DIR = ROOT / ".cache" / "matplotlib"
 XDG_CACHE_DIR = ROOT / ".cache"
 
@@ -42,6 +43,7 @@ def plot_metric(rows, metric, ylabel, filename):
     workloads = sorted({row["workload"] for row in rows})
     FIGURES_DIR.mkdir(parents=True, exist_ok=True)
     WEBSITE_FIGURES_DIR.mkdir(parents=True, exist_ok=True)
+    DOCS_FIGURES_DIR.mkdir(parents=True, exist_ok=True)
 
     plt.figure(figsize=(7, 4.5))
     for workload in workloads:
@@ -67,6 +69,7 @@ def plot_metric(rows, metric, ylabel, filename):
     plt.savefig(output_path, dpi=180)
     plt.close()
     shutil.copy2(output_path, WEBSITE_FIGURES_DIR / filename)
+    shutil.copy2(output_path, DOCS_FIGURES_DIR / filename)
 
 
 def main():
