@@ -1,6 +1,7 @@
 build/
 .venv/
 .cache/
+paper/
 
 # macOS
 .DS_Store
